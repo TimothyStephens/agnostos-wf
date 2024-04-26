@@ -1,17 +1,17 @@
 rule gene_prediction:
     input:
-        contigs = config['data']
+        seqs = config['sequences']
     params:
-        stage = config["data_stage"],
+        stage = config["sequence_type"],
         prodigal_mode = config["prodigal_mode"],
         prodigal_bin = config["prodigal_bin"],
-        data_partial = config["data_partial"],
+        sequences_partial = config["sequences_partial"],
         rename_orfs = "scripts/rename_orfs.awk",
         partial_info = "scripts/get_orf_partial_info.awk",
         gff_output = config["rdir"] + "/gene_prediction/orfs_info.gff",
         tmp = config["rdir"] + "/gene_prediction/tmpl"
-    conda:
-        config["conda_env"]
+    container:
+        "docker://biocontainers/prodigal:v1-2.6.3-4-deb_cv1"
     output:
         fa = config["rdir"] + "/gene_prediction/orf_seqs.fasta",
         partial = config["rdir"] + "/gene_prediction/orf_partial_info.tsv"
@@ -27,23 +27,23 @@ rule gene_prediction:
 
         if [[ {params.stage} = "contigs" ]]; then
 
-            {params.prodigal_bin} -i {input.contigs} -a {output.fa} -m -p {params.prodigal_mode} -f gff  -o {params.gff_output} -q 2>{log.err} 1>{log.out}
+            {params.prodigal_bin} -i <(gunzip -fc {input.seqs}) -a {output.fa} -m -p {params.prodigal_mode} -f gff  -o {params.gff_output} -q 2>{log.err} 1>{log.out}
 
             awk -f {params.rename_orfs} {output.fa} > {params.tmp} && mv {params.tmp} {output.fa}
 
             awk -f {params.partial_info} {params.gff_output} > {output.partial}
 
-        elif [[ {params.stage} = "genes" ]]; then
+        elif [[ {params.stage} = "proteins" ]]; then
 
-            ln -sf {input.contigs} {output.fa}
+            ln -sf {input.seqs} {output.fa}
 
-            ln -sf {params.data_partial} {output.partial}
+            ln -sf {params.sequences_partial} {output.partial}
 
         elif [[ {params.stage} = "anvio_genes" ]]; then
 
-            ln -sf {input.contigs} {output.fa}
+            ln -sf {input.seqs} {output.fa}
 
-            awk -vOFS="\\t" 'NR>1{{if($6==0) print $1,"00"; else print $1,"11";}}' {params.data_partial} > {output.partial}
+            awk -vOFS="\\t" 'NR>1{{if($6==0) print $1,"00"; else print $1,"11";}}' {params.sequences_partial} > {output.partial}
 
         fi
 

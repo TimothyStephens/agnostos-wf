@@ -8,9 +8,9 @@ rule creation_workflow_report:
         config["conda_env"]
     params:
         basedir = config["rdir"],
-        stage = config["data_stage"],
+        sequence_type = config["sequence_type"],
         outdir = config["rdir"] + "/report/",
-        input_data = config["data"],
+        input_data = config["sequences"],
         name_data = config["data_name"],
         report_maker = "scripts/report_maker.r",
         wf_report = "scripts/creation_workflow_report.Rmd"
@@ -25,7 +25,7 @@ rule creation_workflow_report:
         """
         Rscript --vanilla {params.report_maker} --basedir {params.basedir} \
                                                 --outdir  {params.outdir} \
-                                                --stage {params.stage} \
+                                                --stage {params.sequence_type} \
                                                 --name {params.name_data} \
                                                 --input {params.input_data} \
                                                 --wf_report {params.wf_report} \

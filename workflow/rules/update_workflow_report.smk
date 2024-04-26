@@ -11,7 +11,7 @@ rule update_workflow_report:
         outdir = config["rdir"] + "/report/",
         input_data = config["data"],
         name_data = config["data_name"],
-        stage = config["data_stage"],
+        sequence_type = config["sequence_type"],
         report_maker = "scripts/report_maker.r",
         wf_report = "scripts/update_workflow_report.Rmd"
     output:
@@ -27,7 +27,7 @@ rule update_workflow_report:
                                                 --outdir  {params.outdir} \
                                                 --name {params.name_data} \
                                                 --input {params.input_data} \
-                                                --stage {params.stage} \
+                                                --stage {params.sequence_type} \
                                                 --wf_report {params.wf_report} \
                                                 --output {output.report} 2>{log.err} 1>{log.out}
 

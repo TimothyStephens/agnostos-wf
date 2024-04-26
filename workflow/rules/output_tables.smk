@@ -8,7 +8,7 @@ rule output_tables:
     params:
         contig = config["rdir"] + "/output_tables/contig_genes.tsv",
         new_data_name = config["data_name"],
-        data_stage = config["data_stage"],
+        sequence_type = config["sequence_type"],
         orig_db = config["ordir"],
         clu_info = config["rdir"] + "/mmseqs_clustering/cluDB_info.tsv",
         clu_origin = config["rdir"] + "/integrated_cluster_DB/cluDB_name_origin_size.tsv.gz",
@@ -67,7 +67,7 @@ rule output_tables:
                           --orig_db {params.orig_db} \
                           --is_singl {params.singl} \
                           --s_categ {params.singl_cat} \
-                          --anvio {params.data_stage} \
+                          --anvio {params.sequence_type} \
                           --threads {threads} 2>{log.err} 1>{log.out}
 
         """
