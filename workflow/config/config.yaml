@@ -1,20 +1,20 @@
 # This file should contain everything to configure the workflow on a global scale.
 
 ## Major absolute path prefixes
-# Workflow absolute path
+# Workflow absolute path (path to the scripts from GitHub)
 wdir: "/home/timothy/GitHub/agnostos-wf/workflow"
 # Results absolute path
-rdir: "/home/timothy/GitHub/agnostos-wf/results"
+rdir: "/scratch/timothy/tmp/agnostos-wf/results"
 # Community cluster absolute path (can be that same as rdir)
-idir: "/home/timothy/GitHub/agnostos-wf/results"
+idir: "/scratch/timothy/tmp/agnostos-wf/results"
 # Database absolute path
-ddir: "/home/timothy/GitHub/agnostos-wf/databases"
+ddir: "/scratch/timothy/tmp/agnostos-wf/databases"
 
 # Absolute path to existing cluster DB (sequence and cluster DBs) - only used for the "update" module
-ordir: "/home/timothy/GitHub/agnostos-wf/results/clusterDB_results"
+ordir: "/scratch/timothy/tmp/agnostos-wf/results/clusterDB_results"
 
 ## Local template folder
-local_tmp: &tmpdir "/home/timothy/GitHub/agnostos-wf/tmp"
+local_tmp: &tmpdir "/scratch/timothy/tmp/agnostos-wf/tmp"
 
 ## Setting module to "update" to run the cluster-update version of the snakemake workflow (otherwise "creation")
 module: "creation" #"update"
@@ -47,7 +47,8 @@ shared_type: "all" # "discarded" # "increase"
 # If you want ot dowload the required DBs at each step and then remove them, set db_mode to memory.
 db_mode: "memory" # Options: "memory", "all"
 
-conda_env: "../envs/workflow.yml"
+# Docker image of all major tools used by agnostos
+container_env: "/home/timothy/GitHub/containerize-conda/builds/agnostos-wf/agnostos-wf_v1.1.1-rev1.sif"
 
 # Threads configuration
 threads_default: 28
@@ -83,19 +84,19 @@ aa_mutants: "aaseqs"
 mutantDB: "feba.db"
 
 # MPI runner (de.NBI cloud, SLURM)
-mpi_runner: "srun --mpi=pmi2"
+mpi_runner: "mpirun --np 96 --oversubscribe" #"srun --mpi=pmi2"
 
 #vmtouch for the DBs
 vmtouch: "vmtouch"
 
-# Gene prediction
+# Rule: gene_prediction
 prodigal_bin: "prodigal"
 prodigal_mode: "meta" # for metagenomic data or "normal" for genomic data
 
 # Annotation
 hmmer_bin: "hmmsearch"
 
-# Clustering config
+# Rule: mmseqs_clustering
 mmseqs_bin: "mmseqs"
 mmseqs_tmp: *tmpdir
 mmseqs_local_tmp: *tmpdir
