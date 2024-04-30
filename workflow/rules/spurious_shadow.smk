@@ -1,38 +1,37 @@
 rule spurious_shadow:
     input:
-        fasta = config["rdir"] + "/gene_prediction/orf_seqs.fasta",
+        fasta    = config["rdir"] + "/gene_prediction/orf_seqs.fasta",
         clusters = config["rdir"] + "/mmseqs_clustering/cluDB_no_singletons.tsv"
     threads: 16
     priority: 30
-    conda:
-        config["conda_env"]
+    container:
+        config["container_env"]
     params:
-        hmmer_bin = config["hmmer_bin"],
-        mpi_runner = config["mpi_runner"],
-        hmmpress = config["hmmpress_bin"],
-        antifamdb = config["antifam_db"],
-        local_tmp = config["mmseqs_local_tmp"],
-        module = config["module"],
+        hmmer_bin   = config["hmmer_bin"],
+        mpi_runner  = config["mpi_runner"],
+        hmmpress    = config["hmmpress_bin"],
+        antifamdb   = config["ddir"] + '/' + config["antifam_db"],
+        local_tmp   = config["mmseqs_local_tmp"],
+        module      = config["module"],
         eval_shared = config["eval_shared"],
-        db_mode = config["db_mode"],
-        shadowr = "scripts/shadow_orfs.r",
-        clu_info = config["rdir"] + "/mmseqs_clustering/cluDB_info.tsv",
-        hmmout = config["rdir"] + "/spurious_shadow/hmmsearch_antifam_sp.out",
-        hmmlog = config["rdir"] + "/spurious_shadow/hmmsearch_antifam_sp.log",
-        partial = config["rdir"] + "/gene_prediction/orf_partial_info.tsv",
-        spur = config["rdir"] + "/spurious_shadow/spurious_orfs.tsv",
-        all_shad = config["rdir"] + "/spurious_shadow/all_shadow_orfs.tsv",
-        only_shad = config["rdir"] + "/spurious_shadow/shadow_orfs_info.tsv",
-        or_sp_sh = config["ordir"] + "/spurious_shadow_info.tsv.gz",
-        tmp1 = config["rdir"] + "/spurious_shadow/tmpl1",
-        tmp2 = config["rdir"] + "/spurious_shadow/tmpl2"
+        db_mode     = config["db_mode"],
+        shadowr     = config["wdir"] + "scripts/shadow_orfs.r",
+        clu_info    = config["rdir"] + "/mmseqs_clustering/cluDB_info.tsv",
+        hmmout      = config["rdir"] + "/spurious_shadow/hmmsearch_antifam_sp.out",
+        hmmlog      = config["rdir"] + "/spurious_shadow/hmmsearch_antifam_sp.log",
+        partial     = config["rdir"] + "/gene_prediction/orf_partial_info.tsv",
+        spur        = config["rdir"] + "/spurious_shadow/spurious_orfs.tsv",
+        all_shad    = config["rdir"] + "/spurious_shadow/all_shadow_orfs.tsv",
+        only_shad   = config["rdir"] + "/spurious_shadow/shadow_orfs_info.tsv",
+        or_sp_sh    = config["ordir"] + "/spurious_shadow_info.tsv.gz",
+        tmp1        = config["rdir"] + "/spurious_shadow/tmpl1",
+        tmp2        = config["rdir"] + "/spurious_shadow/tmpl2"
     output:
         sp_sh = config["rdir"] + "/spurious_shadow/spurious_shadow_info.tsv"
     log:
-        out = "logs/spsh_stdout.log",
-        err = "logs/spsh_stderr.err"
+        config["rdir"] + "/logs/spurious_shadow.log"
     benchmark:
-        "benchmarks/spurious_shadow.tsv"
+        config["rdir"] + "/benchmarks/spurious_shadow.tsv"
     shell:
         """
         set -x
@@ -58,7 +57,7 @@ rule spurious_shadow:
         N=$(($NSEQS * $NANTI))
 
         # Run hmmsearch (MPI mode)
-        {params.mpi_runner} {params.hmmer_bin} --mpi --cut_ga -Z "${{N}}" --domtblout {params.hmmout} -o {params.hmmlog} {params.antifamdb} {input.fasta} 2>{log.err} 1>{log.out}
+        {params.mpi_runner} {params.hmmer_bin} --mpi --cut_ga -Z "${{N}}" --domtblout {params.hmmout} -o {params.hmmlog} {params.antifamdb} {input.fasta}
 
         if [[ {params.db_mode} == "memory" ]]; then
             DB=$(dirname {params.antifamdb})
@@ -66,12 +65,12 @@ rule spurious_shadow:
         fi
 
         # Parse the results
-        grep -v '^#' {params.hmmout} > {params.spur}.tmp || true > {params.spur}.tmp 2>>{log.err}
+        grep -v '^#' {params.hmmout} > {params.spur}.tmp || true > {params.spur}.tmp
 
         rm {params.hmmout} {params.hmmlog}
 
         if [[ -s {params.spur}.tmp ]]; then
-            awk '$13<=1e-05 && !seen[$1]++{{print $1}}' {params.spur}.tmp > {params.spur} 2>>{log.err}
+            awk '$13<=1e-05 && !seen[$1]++{{print $1}}' {params.spur}.tmp > {params.spur}
             rm {params.spur}.tmp
         else
             mv {params.spur}.tmp {params.spur}
@@ -80,7 +79,7 @@ rule spurious_shadow:
         # 2. Detection of shadow ORFs
         ./{params.shadowr} --orfs {params.partial} \
                            --shadows {params.all_shad} \
-                           --threads {threads} 2>>{log.err}
+                           --threads {threads}
 
         ## 2.1 Parsing of results adding cluster information
         ## Add cluster info on the first column of ORFs
