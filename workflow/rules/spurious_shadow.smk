@@ -77,9 +77,9 @@ rule spurious_shadow:
         fi
 
         # 2. Detection of shadow ORFs
-        ./{params.shadowr} --orfs {params.partial} \
-                           --shadows {params.all_shad} \
-                           --threads {threads}
+        {params.shadowr} --orfs {params.partial} \
+                         --shadows {params.all_shad} \
+                         --threads {threads}
 
         ## 2.1 Parsing of results adding cluster information
         ## Add cluster info on the first column of ORFs

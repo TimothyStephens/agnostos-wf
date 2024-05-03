@@ -68,13 +68,13 @@ rule cluster_category_stats:
         ## Cluster Kaiju taxonomy with GTDB r89
         if [[ ! -s {params.kaiju_res} ]]; then
             {params.vmtouch} -f ${{TAXDB}}
-            ./{params.kaiju_tax} --search {params.kaiju_bin} \
-                                 --input {params.refdb} \
-                                 --taxdb ${{TAXDB}} \
-                                 --parsing {params.kaiju_parse} \
-                                 --output {params.kaiju_res} \
-                                 --tmpl {params.tmpl} \
-                                 --threads {threads}
+            {params.kaiju_tax} --search {params.kaiju_bin} \
+                               --input {params.refdb} \
+                               --taxdb ${{TAXDB}} \
+                               --parsing {params.kaiju_parse} \
+                               --output {params.kaiju_res} \
+                               --tmpl {params.tmpl} \
+                               --threads {threads}
         fi
         
         if [[ {params.db_mode} == "memory" ]]; then
@@ -211,18 +211,18 @@ rule cluster_category_stats:
         
         ## Cluster general stats
         
-        ./{params.stats} --ref_clu {params.ref} \
-                         --clu_categ {input.cl_cat} \
-                         --kaiju_tax {params.kaiju_res} \
-                         --clu_dark {params.dark} \
-                         --dpd_info {params.dpd_info} \
-                         --compl {params.compl} \
-                         --hq_clu {output.HQ_clusters} \
-                         --mutantDB {params.mutantDB} \
-                         --mutants {params.mutants} \
-                         --eggnog {params.eggnog_dir}/cluster_eggnogs.tsv \
-                         --summ_stats {output.cat_stats} \
-                         --output {params.outdir}
+        {params.stats} --ref_clu {params.ref} \
+                       --clu_categ {input.cl_cat} \
+                       --kaiju_tax {params.kaiju_res} \
+                       --clu_dark {params.dark} \
+                       --dpd_info {params.dpd_info} \
+                       --compl {params.compl} \
+                       --hq_clu {output.HQ_clusters} \
+                       --mutantDB {params.mutantDB} \
+                       --mutants {params.mutants} \
+                       --eggnog {params.eggnog_dir}/cluster_eggnogs.tsv \
+                       --summ_stats {output.cat_stats} \
+                       --output {params.outdir}
         
         if [[ {params.db_mode} == "memory" ]]; then
             rm {params.dpd_info} {params.DPD}

@@ -27,11 +27,11 @@ rule cluster_functional_validation:
             wget https://figshare.com/ndownloader/files/31127782 -O {params.pfam_shared_terms}
         fi
         
-        ./{params.funct_valr} --input {input.cl_annot} \
-                              --pfam_terms {params.pfam_shared_terms} \
-                              --output {output.fval_res} \
-                              --functions {params.funct_val_fun} \
-                              --threads {threads}
+        {params.funct_valr} --input {input.cl_annot} \
+                            --pfam_terms {params.pfam_shared_terms} \
+                            --output {output.fval_res} \
+                            --functions {params.funct_val_fun} \
+                            --threads {threads}
         
         if [[ {params.db_mode} == "memory" ]]; then
             rm {params.pfam_shared_terms}

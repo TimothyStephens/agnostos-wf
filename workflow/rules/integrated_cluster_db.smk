@@ -195,11 +195,11 @@ rule integrated_cluster_db:
             wget https://ndownloader.figshare.com/files/23067134 -O {params.or_clu_com}
         fi
         
-        ./{params.integr_comm} --name {params.data_name} \
-                               --comm {input.clu_com} \
-                               --ocomm {params.or_clu_com} \
-                               --icomm {output.iclu_com} \
-                               --shared {params.eval_shared}
+        {params.integr_comm} --name {params.data_name} \
+                             --comm {input.clu_com} \
+                             --ocomm {params.or_clu_com} \
+                             --icomm {output.iclu_com} \
+                             --shared {params.eval_shared}
         
         gzip {output.iclu_com}
         

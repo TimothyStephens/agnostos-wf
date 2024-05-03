@@ -53,21 +53,21 @@ rule output_tables:
         # add contextual data if the original DB is the agnostosDB
         awk -vOFS='\\t' '{{split($1,a,"_\\\+|_-"); print a[1],$1}}' {input.genes} > {params.contig}
         
-        ./{params.parser} --clu_or {params.clu_origin} \
-                          --contig {params.contig} \
-                          --cat {input.cat} \
-                          --clu_info {params.clu_info} \
-                          --name {params.new_data_name} \
-                          --comm {params.comm} \
-                          --hq_clu {params.hq_clu} \
-                          --k_annot {params.k_annot} \
-                          --kwp_annot {params.kwp_annot} \
-                          --gu_annot {params.gu_annot} \
-                          --orig_db {params.orig_db} \
-                          --is_singl {params.singl} \
-                          --s_categ {params.singl_cat} \
-                          --anvio {params.sequence_type} \
-                          --threads {threads}
+        {params.parser} --clu_or {params.clu_origin} \
+                        --contig {params.contig} \
+                        --cat {input.cat} \
+                        --clu_info {params.clu_info} \
+                        --name {params.new_data_name} \
+                        --comm {params.comm} \
+                        --hq_clu {params.hq_clu} \
+                        --k_annot {params.k_annot} \
+                        --kwp_annot {params.kwp_annot} \
+                        --gu_annot {params.gu_annot} \
+                        --orig_db {params.orig_db} \
+                        --is_singl {params.singl} \
+                        --s_categ {params.singl_cat} \
+                        --anvio {params.sequence_type} \
+                        --threads {threads}
         ) 1>{log} 2>&1
         """
 

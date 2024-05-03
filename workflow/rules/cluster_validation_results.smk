@@ -38,13 +38,13 @@ rule cluster_validation_results:
           > {params.tmp} && mv {params.tmp} {params.val_annot}
         
         # Combine with functional validation results
-        ./{params.val_res} --fval_res {input.fval} \
-                           --cval_res {input.cval} \
-                           --val_annot {params.val_annot} \
-                           --val_res {output.val_res} \
-                           --val_stats {params.val_stats} \
-                           --good {output.good} \
-                           --plots {params.val_plots}
+        {params.val_res} --fval_res {input.fval} \
+                         --cval_res {input.cval} \
+                         --val_annot {params.val_annot} \
+                         --val_res {output.val_res} \
+                         --val_stats {params.val_stats} \
+                         --good {output.good} \
+                         --plots {params.val_plots}
         
         rm -rf {params.val_annot} {params.tmp}
         ) 1>{log} 2>&1

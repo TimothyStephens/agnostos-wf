@@ -139,7 +139,7 @@ rule cluster_category_refinement:
                 sed -e 's/\\x0//g' {params.tmp_eu}.parsed_pfam > {params.tmp_eu}.tsv
                 
                 #Parsing hhblits result files and filtering for hits with coverage > 0.4, and removing overlapping pfam domains/matches
-                ./{params.hhpfam_parser} {params.tmp_eu}.tsv {threads} > {params.tmp_eu}_filt.tsv
+                {params.hhpfam_parser} {params.tmp_eu}.tsv {threads} > {params.tmp_eu}_filt.tsv
                 
                 if [ -s {params.tmp_eu}_filt.tsv ]; then
                     # join with the pfam names and clans
@@ -162,7 +162,7 @@ rule cluster_category_refinement:
                     
                     if [ -s {params.tmp_eu}_name_acc_clan_multi.tsv ]; then
                         # Divide the new hits with pfam into DUFs and not DUFs
-                        ./{params.new_da} {params.tmp_eu}_name_acc_clan_multi.tsv {params.tmp_eu}
+                        {params.new_da} {params.tmp_eu}_name_acc_clan_multi.tsv {params.tmp_eu}
                         
                         # New K clusters
                         awk '{{print $1}}' {params.tmp_eu}_new_k_ids_annot.tsv >> {output.k}
@@ -307,7 +307,7 @@ rule cluster_category_refinement:
         fi
         
         #Parsing hhblits result files and filtering for hits with coverage > 0.4, and removing overlapping pfam domains/matches
-        ./{params.hhpfam_parser} {params.tmp_kwp}.tsv {threads} > {params.tmp_kwp}_filt.tsv
+        {params.hhpfam_parser} {params.tmp_kwp}.tsv {threads} > {params.tmp_kwp}_filt.tsv
         
         # join with the pfam names and clans
         join -11 -21 \
@@ -328,7 +328,7 @@ rule cluster_category_refinement:
         
         if [ -s {params.tmp_kwp}_name_acc_clan_multi.tsv ]; then
             # Divide the new hits with pfam into DUFs and not DUFs
-            ./{params.new_da} {params.tmp_kwp}_name_acc_clan_multi.tsv {params.tmp_kwp}
+            {params.new_da} {params.tmp_kwp}_name_acc_clan_multi.tsv {params.tmp_kwp}
             
             # New K clusters
             awk '{{print $1}}' {params.tmp_kwp}_new_k_ids_annot.tsv >> {output.k}

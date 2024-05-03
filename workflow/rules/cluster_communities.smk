@@ -90,7 +90,7 @@ rule cluster_communities_inference:
       fi
       
       # Start cluster community inference
-      ./{params.get_comm} -c {params.comm_config}
+      {params.get_comm} -c {params.comm_config}
       
       rm -rf ${{OUT}}/tmp
       
