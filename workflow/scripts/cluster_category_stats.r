@@ -1,22 +1,5 @@
 #!/usr/bin/env Rscript
 
-# Check if basic packages are installed -----------------------------------
-
-is.installed <- function(pkg) {
-  is.element(pkg, installed.packages()[, 1])
-}
-
-if (!is.installed("entropy") || !is.installed("ggridges")) {
-  cat("We will try to install the packages... (this will be only be done once)\n")
-  Sys.sleep(5)
-  if (!is.installed("entropy")) {
-    suppressMessages(install.packages("entropy", repos = "http://cran.us.r-project.org"))
-  }
-  if (!is.installed("ggridges")) {
-    suppressMessages(install.packages("ggridges", repos = "http://cran.us.r-project.org"))
-  }
-}
-
 library(data.table)
 library(tidyverse)
 library(entropy)

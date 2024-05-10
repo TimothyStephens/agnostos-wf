@@ -1,25 +1,5 @@
 #!/usr/bin/env Rscript
 
-# Check if basic packages are installed -----------------------------------
-
-is.installed <- function(pkg) {
-  is.element(pkg, installed.packages()[, 1])
-}
-
-if (!is.installed("stringr") || !is.installed("zoo") || !is.installed("igraph")) {
-  cat("We will try to install the package... (this will be only be done once)\n")
-  Sys.sleep(5)
-  if (!is.installed("stringr")) {
-    suppressMessages(install.packages("stringr", repos = "http://cran.us.r-project.org"))
-  }
-  if (!is.installed("zoo")) {
-    suppressMessages(install.packages("zoo", repos = "http://cran.us.r-project.org"))
-  }
-  if (!is.installed("igraph")) {
-    suppressMessages(install.packages("igraph", repos = "http://cran.us.r-project.org"))
-  }
-}
-
 library(tidyverse)
 library(data.table)
 library(stringi)

@@ -1,25 +1,5 @@
 #!/usr/bin/env Rscript
 
-# Check if basic packages are installed -----------------------------------
-
-is.installed <- function(pkg){
-  is.element(pkg, installed.packages()[,1])
-}
-
-if (!is.installed("proxy") || !is.installed("textreuse") || !is.installed("vegan")){
-  cat("We will try to install the packages... (this will be only be done once)\n")
-  Sys.sleep(5)
-  if (!is.installed("proxy")){
-    suppressMessages(install.packages("proxy", repos = "http://cran.us.r-project.org"))
-  }
-  if (!is.installed("textreuse")){
-    suppressMessages(install.packages("textreuse", repos = "http://cran.us.r-project.org"))
-  }
-  if (!is.installed("vegan")){
-    suppressMessages(install.packages("vegan", repos = "http://cran.us.r-project.org"))
-  }
-}
-
 library(tidyverse)
 library(proxy)
 library(stringr)
@@ -240,7 +220,7 @@ shingl.jacc <- function(clstr, pfam){
 }
 
 source(opt$functions)
-cores <- (as.numeric(opt$threads) - 2)
+cores <- (as.numeric(opt$threads))
 res.list <- mclapply(cluster.list, shingl.jacc, pfam=pfam_shared_term, mc.cores = cores)
 results <- plyr::ldply(res.list, data.frame)
 res.parsed.1 <- results %>% select(rep,jacc_median_raw,jacc_median_sc,type,prop_type,prop_partial) %>% group_by(rep) %>%

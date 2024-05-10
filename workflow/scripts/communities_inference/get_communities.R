@@ -1,25 +1,5 @@
 #!/usr/bin/env Rscript
 
-# Check if basic packages are installed -----------------------------------
-
-is.installed <- function(pkg){
-  is.element(pkg, installed.packages()[,1])
-}
-
-if (!is.installed("crayon") || !is.installed("unixtools") || !is.installed("config")){
-  cat("We will try to install the packages crayon, optparse and config... (this will be only be done once)\n")
-  Sys.sleep(5)
-  if (!is.installed("crayon")){
-    suppressMessages(install.packages("crayon", repos = "http://cran.us.r-project.org"))
-  }
-  if (!is.installed("config")){
-    suppressMessages(install.packages("config", repos = "http://cran.us.r-project.org"))
-  }
-  if (!is.installed("unixtools")){
-    suppressMessages(install.packages("unixtools",,"http://rforge.net/",type="source"))
-  }
-}
-
 suppressMessages(library(crayon))
 suppressMessages(library(optparse))
 

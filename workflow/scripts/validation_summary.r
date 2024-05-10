@@ -1,25 +1,5 @@
 #!/usr/bin/env Rscript
 
-# Check if basic packages are installed -----------------------------------
-
-is.installed <- function(pkg){
-  is.element(pkg, installed.packages()[,1])
-}
-
-if (!is.installed("RSQLite") || !is.installed("dbplyr") || !is.installed("cowplot")){
-  cat("We will try to install the packages... (this will be only be done once)\n")
-  Sys.sleep(5)
-  if (!is.installed("RSQLite")){
-    suppressMessages(install.packages("RSQlite", repos = "https://cloud.r-project.org/"))
-  }
-  if (!is.installed("dbplyr")){
-    suppressMessages(install.packages("dbplyr", repos = "https://cloud.r-project.org/"))
-  }
-  if (!is.installed("cowplot")){
-    suppressMessages(install.packages("cowplot", repos = "https://cloud.r-project.org/"))
-  }
-}
-
 library(tidyverse)
 library(data.table)
 library(ggrepel)

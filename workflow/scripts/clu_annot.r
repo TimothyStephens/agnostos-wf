@@ -1,19 +1,5 @@
 #!/usr/bin/env Rscript
 
-# Check if basic packages are installed -----------------------------------
-
-is.installed <- function(pkg) {
-  is.element(pkg, installed.packages()[, 1])
-}
-
-if (!is.installed("maditr")) {
-  cat("We will try to install the package... (this will be only be done once)\n")
-  Sys.sleep(5)
-  if (!is.installed("maditr")) {
-    suppressMessages(install.packages("maditr", repos = "http://cran.us.r-project.org"))
-  }
-}
-
 library(tidyverse)
 library(data.table)
 library(maditr)

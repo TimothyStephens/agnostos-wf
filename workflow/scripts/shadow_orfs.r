@@ -1,21 +1,5 @@
 #!/usr/bin/env Rscript
 
-# Check if basic packages are installed -----------------------------------
-
-is.installed <- function(pkg){
-  is.element(pkg, installed.packages()[,1])
-}
-
-if (!is.installed("valr")){
-  cat("We will try to install the package... (this will be only be done once)\n")
-  Sys.sleep(5)
-  if (!is.installed("valr")){
-    suppressMessages(install.packages("BiocManager", repos = "http://cran.us.r-project.org"))
-    suppressMessages(BiocManager::install("rtracklayer"))
-    suppressMessages(install.packages("valr", repos = "http://cran.us.r-project.org"))
-  }
-}
-
 library(tidyverse)
 library(data.table)
 library(valr)
@@ -88,7 +72,7 @@ overlaps_dt_f <- function(X,tbl){
   }
 }
 
-shadows <- mclapply(contigs$contig,overlaps_dt_f,tbl=orfs, mc.cores = opt$threads - 2)
+shadows <- mclapply(contigs$contig,overlaps_dt_f,tbl=orfs, mc.cores = opt$threads)
 shadows <- Filter(Negate(is.null),shadows)
 shadows <- plyr::ldply(shadows,data.frame)
 write.table(shadows,opt$shadows,col.names = F, row.names = F, sep = "\t", quote = F, append = T)

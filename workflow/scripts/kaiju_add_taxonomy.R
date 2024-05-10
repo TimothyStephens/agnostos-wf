@@ -1,23 +1,4 @@
 #!/usr/bin/env Rscript
-# Check if basic packages are installed -----------------------------------
-
-is.installed <- function(pkg){
-  is.element(pkg, installed.packages()[,1])
-}
-
-if (!is.installed("crayon") || !is.installed("config") || !is.installed("taxonomizr")){
-  cat("We will try to install the packages crayon, optparse and config... (this will be only be done once)\n")
-  Sys.sleep(5)
-  if (!is.installed("crayon")){
-    suppressMessages(install.packages("crayon", repos = "http://cran.us.r-project.org"))
-  }
-  if (!is.installed("config")){
-    suppressMessages(install.packages("config", repos = "http://cran.us.r-project.org"))
-  }
-  if (!is.installed("taxonomizr")){
-    suppressMessages(install.packages("taxonomizr", repos = "http://cran.us.r-project.org"))
-  }
-}
 
 suppressMessages(library(crayon))
 suppressMessages(library(optparse))
