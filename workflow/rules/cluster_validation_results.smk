@@ -38,6 +38,8 @@ rule cluster_validation_results:
           > {params.tmp} && mv {params.tmp} {params.val_annot}
         
         # Combine with functional validation results
+        . /usr/local/etc/profile.d/conda.sh
+        conda activate /usr/local/envs/validation_summary
         {params.val_res} --fval_res {input.fval} \
                          --cval_res {input.cval} \
                          --val_annot {params.val_annot} \
@@ -45,6 +47,7 @@ rule cluster_validation_results:
                          --val_stats {params.val_stats} \
                          --good {output.good} \
                          --plots {params.val_plots}
+        conda deactivate
         
         rm -rf {params.val_annot} {params.tmp}
         ) 1>{log} 2>&1

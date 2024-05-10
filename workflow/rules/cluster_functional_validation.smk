@@ -27,11 +27,14 @@ rule cluster_functional_validation:
             wget https://figshare.com/ndownloader/files/31127782 -O {params.pfam_shared_terms}
         fi
         
+        . /usr/local/etc/profile.d/conda.sh
+        conda activate /usr/local/envs/functional_validation
         {params.funct_valr} --input {input.cl_annot} \
                             --pfam_terms {params.pfam_shared_terms} \
                             --output {output.fval_res} \
                             --functions {params.funct_val_fun} \
                             --threads {threads}
+        conda deactivate
         
         if [[ {params.db_mode} == "memory" ]]; then
             rm {params.pfam_shared_terms}

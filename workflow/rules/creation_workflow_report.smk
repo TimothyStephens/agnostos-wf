@@ -23,6 +23,8 @@ rule creation_workflow_report:
     shell:
         """
         (
+        . /usr/local/etc/profile.d/conda.sh
+        conda activate /usr/local/envs/report_maker
         Rscript --vanilla {params.report_maker} --basedir {params.basedir} \
                                                 --outdir  {params.outdir} \
                                                 --stage {params.sequence_type} \
@@ -30,5 +32,6 @@ rule creation_workflow_report:
                                                 --input {params.input_data} \
                                                 --wf_report {params.wf_report} \
                                                 --output {output.report}
+        conda deactivate
         ) 1>{log} 2>&1
         """

@@ -210,7 +210,8 @@ rule cluster_category_stats:
         rm {params.outdir}/refined_cl_genes.fasta
         
         ## Cluster general stats
-        
+        . /usr/local/etc/profile.d/conda.sh
+        conda activate /usr/local/envs/cluster_category_stats
         {params.stats} --ref_clu {params.ref} \
                        --clu_categ {input.cl_cat} \
                        --kaiju_tax {params.kaiju_res} \
@@ -223,6 +224,7 @@ rule cluster_category_stats:
                        --eggnog {params.eggnog_dir}/cluster_eggnogs.tsv \
                        --summ_stats {output.cat_stats} \
                        --output {params.outdir}
+        conda deactivate
         
         if [[ {params.db_mode} == "memory" ]]; then
             rm {params.dpd_info} {params.DPD}

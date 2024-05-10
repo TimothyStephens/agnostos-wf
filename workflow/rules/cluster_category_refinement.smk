@@ -162,7 +162,11 @@ rule cluster_category_refinement:
                     
                     if [ -s {params.tmp_eu}_name_acc_clan_multi.tsv ]; then
                         # Divide the new hits with pfam into DUFs and not DUFs
+                        . /usr/local/etc/profile.d/conda.sh
+                        
+                        conda activate /usr/local/envs/categ_ref_new_domain_archit
                         {params.new_da} {params.tmp_eu}_name_acc_clan_multi.tsv {params.tmp_eu}
+                        conda deactivate 
                         
                         # New K clusters
                         awk '{{print $1}}' {params.tmp_eu}_new_k_ids_annot.tsv >> {output.k}
@@ -328,7 +332,10 @@ rule cluster_category_refinement:
         
         if [ -s {params.tmp_kwp}_name_acc_clan_multi.tsv ]; then
             # Divide the new hits with pfam into DUFs and not DUFs
+            . /usr/local/etc/profile.d/conda.sh
+            conda activate /usr/local/envs/categ_ref_new_domain_archit
             {params.new_da} {params.tmp_kwp}_name_acc_clan_multi.tsv {params.tmp_kwp}
+            conda deactivate
             
             # New K clusters
             awk '{{print $1}}' {params.tmp_kwp}_new_k_ids_annot.tsv >> {output.k}

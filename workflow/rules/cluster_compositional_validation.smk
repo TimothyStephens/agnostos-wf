@@ -55,6 +55,8 @@ rule cluster_compositional_validation:
             DB={params.new_clseqdb}
         fi
         
+        . /usr/local/etc/profile.d/conda.sh
+        conda activate /usr/local/envs/get_stats
         {params.mpi_runner} {params.mmseqs_bin} apply ${{DB}} {params.outdb} \
             -- {params.cvals} --derep {params.mmseqs_bin} \
                        --msa {params.famsa_bin} \
@@ -68,6 +70,7 @@ rule cluster_compositional_validation:
                        --outdir {params.outdir} \
                        --slots {threads} \
                        --threads {threads}
+        conda deactivate
         
         # Collect results:
         # collect cluster main compositional validation stats and cluster rejected (bad-aligned) ORFs

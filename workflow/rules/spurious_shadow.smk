@@ -15,7 +15,7 @@ rule spurious_shadow:
         module      = config["module"],
         eval_shared = config["eval_shared"],
         db_mode     = config["db_mode"],
-        shadowr     = config["wdir"] + "scripts/shadow_orfs.r",
+        shadowr     = config["wdir"] + "/scripts/shadow_orfs.r",
         clu_info    = config["rdir"] + "/mmseqs_clustering/cluDB_info.tsv",
         hmmout      = config["rdir"] + "/spurious_shadow/hmmsearch_antifam_sp.out",
         hmmlog      = config["rdir"] + "/spurious_shadow/hmmsearch_antifam_sp.log",
@@ -77,10 +77,13 @@ rule spurious_shadow:
         fi
 
         # 2. Detection of shadow ORFs
+        . /usr/local/etc/profile.d/conda.sh
+        conda activate /usr/local/envs/shadow_orfs
         {params.shadowr} --orfs {params.partial} \
                          --shadows {params.all_shad} \
                          --threads {threads}
-
+        conda deactivate 
+        
         ## 2.1 Parsing of results adding cluster information
         ## Add cluster info on the first column of ORFs
         join -12 -23 <(sort --parallel={threads} -k2,2 {params.all_shad}) \

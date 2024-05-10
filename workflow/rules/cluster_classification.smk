@@ -253,12 +253,15 @@ rule cluster_classification:
         fi
         
         # Load the annotated cluster file in R to retrieve a consensus pfam domain architecture
+        . /usr/local/etc/profile.d/conda.sh
+        conda activate /usr/local/envs/cluster_pfam_domain_architectures
         {params.da_r} --ref_annot {input.ref_annot} \
                       --clu_annot {params.clu_annot} \
                       --good_cl {params.good_cl} \
                       --pfam_terms {params.pfam} \
                       --dom_arch {params.dom_arch} \
                       --threads {threads}
+        conda deactivate
         
         if [[ {params.db_mode} == "memory" ]]; then
             rm {params.pfam}

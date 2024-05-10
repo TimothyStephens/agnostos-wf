@@ -60,11 +60,14 @@ rule cluster_pfam_annotation:
         
         # The r script "clu_annot.r" distribute the Pfam annotation in the clusters,
         # creating two sets: "annotated_clusters" and "not_annotated_clusters"
+        . /usr/local/etc/profile.d/conda.sh
+        conda activate /usr/local/envs/clu_annot
         {params.cl_annotr} --pfam_annot {params.multi_annot}.gz \
                            --clusters {input.clu} \
                            --partial {input.partial} \
                            --output_annot {output.cl_annot} \
                            --output_noannot {output.cl_noannot}
+        conda deactivate
         
         ## 3. Singleton annotations
         

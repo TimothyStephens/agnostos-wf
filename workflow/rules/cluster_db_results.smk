@@ -90,6 +90,8 @@ rule cluster_db_results:
         # Integrated set of high quality (HQ) clusters
         gzip -c {input.ihq_clu} > {output.hq_clu}
         
+        . /usr/local/etc/profile.d/conda.sh
+        conda activate /usr/local/envs/creation_output_tables
         {params.parser} --clu_or {params.clu_origin} \
                         --cat {output.clu_cat} \
                         --clu_info {params.clu_info} \
@@ -101,6 +103,7 @@ rule cluster_db_results:
                         --anvio {params.sequence_type} \
                         --res {output.clu_out_tbl} \
                         --threads {threads}
+        conda deactivate
         
         gzip {params.clu_origin}
         
