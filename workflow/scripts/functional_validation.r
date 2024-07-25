@@ -40,7 +40,7 @@ options(readr.num_columns = 0)
 
 #Validation of clusters with pfam annotations
 # Read annotated clusters
-cluster_annot <- read_tsv(opt$input, col_names = F) %>%
+cluster_annot <- read_tsv(opt$input, col_names = F, col_types = "ccccccc") %>%
   setNames(c("cl_name","rep","memb","annot","acc","clan","partial")) %>%
   dplyr::select(rep,memb,partial,annot,clan)
 

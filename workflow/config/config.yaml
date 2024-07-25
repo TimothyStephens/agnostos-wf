@@ -4,14 +4,17 @@
 # Workflow absolute path (path to the scripts from GitHub)
 wdir: "/home/timothy/GitHub/agnostos-wf/workflow"
 # Results absolute path
-rdir: "/scratch/timothy/tmp/agnostos-wf/results"
+#rdir: "/scratch/timothy/tmp/agnostos-wf/results"
+rdir: "/scratch/timothy/tmp/agnostos-wf/results_update"
 # Community cluster absolute path (can be that same as rdir)
-idir: "/scratch/timothy/tmp/agnostos-wf/results"
+#idir: "/scratch/timothy/tmp/agnostos-wf/results"
+idir: "/scratch/timothy/tmp/agnostos-wf/results_update"
 # Database absolute path
 ddir: "/scratch/timothy/tmp/agnostos-wf/databases"
 
 # Absolute path to existing cluster DB (sequence and cluster DBs) - only used for the "update" module
-ordir: "/scratch/timothy/tmp/agnostos-wf/results/clusterDB_results"
+#ordir: "/scratch/timothy/tmp/agnostos-wf/results/clusterDB_results"
+ordir: "/scratch/timothy/tmp/agnostos-wf/clusterDB_results"
 
 ## Local template folder
 local_tmp: &tmpdir "/scratch/timothy/tmp/agnostos-wf/tmp"
@@ -20,12 +23,14 @@ local_tmp: &tmpdir "/scratch/timothy/tmp/agnostos-wf/tmp"
 module: "creation" #"update"
 
 ## Choose a name for your dataset
-data_name: "tara_039_041"
+#data_name: "tara_039_041"
+data_name: "TARA_038"
 
 ## Absolute path to the sequences that will be clustered or integrated into an existing cluster DB
 # Formats: name_contigs.fasta or name_proteins.fasta
 #   OR     name_contigs.fasta.gz or name_proteins.fasta.gz
-sequences: "/home/timothy/GitHub/agnostos-wf/agnostos_test/db_creation_data/TARA_039_041_SRF_0.1-0.22_5K_contigs.fasta"
+#sequences: "/home/timothy/GitHub/agnostos-wf/agnostos_test/db_creation_data/TARA_039_041_SRF_0.1-0.22_5K_contigs.fasta"
+sequences: "/home/timothy/GitHub/agnostos-wf/agnostos_test/TARA_039_041_028_SRF_0.1-0.22_5K_contigs.fasta"
 ## Specify which type of sequence you have, can be either "proteins" or "contigs"
 sequence_type: "contigs" #"contigs" or "proteins" or "anvio_genes"
 ## If you alrady have the protein predictions, please provide path to protein completeness information (i.e., complete or partial ORFs)
@@ -62,7 +67,7 @@ pfam_clan: "Pfam-A.clans.tsv.gz"
 antifam_db: "AntiFam.hmm"
 uniref90_db: "uniref90.db"
 nr_db: "nr.db"
-uniclust_db: "UniRef30_2023_02"
+uniclust_db: "UniRef30_2021_03"
 pfam_hh_db: "pfam"
 DPD: "dpd_uniprot_sprot.fasta.gz"
 # Taxonomy for the gene cluster sequences
@@ -84,7 +89,8 @@ aa_mutants: "aaseqs"
 mutantDB: "feba.db"
 
 # MPI runner (de.NBI cloud, SLURM)
-mpi_runner: "mpirun --np 96 --oversubscribe" #"srun --mpi=pmi2"
+mpi_runner: "" #"mpirun --np 48 --oversubscribe" #"srun --mpi=pmi2"
+mpi_runner_hmmer: "mpirun --np 48" #"srun --mpi=pmi2"
 
 #vmtouch for the DBs
 vmtouch: "vmtouch"
@@ -114,6 +120,8 @@ datamash_bin: "datamash"
 famsa_bin: "famsa"
 odseq_bin: "OD-seq"
 parasail_bin: "parasail_aligner"
+batch_size: 10000000
+memory_budget: "30GB"
 parallel_bin: "parallel"
 igraph_lib: "export LD_LIBRARY_PATH=/home/timothy/GitHub/agnostos-wf/bin/igraph/lib:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 parasail_lib: "export LD_LIBRARY_PATH=/home/timothy/GitHub/agnostos-wf/lib:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
@@ -124,7 +132,7 @@ filterbyname: "filterbyname.sh"
 hhcons_bin: "hhconsensus"
 
 # Cluster category refinement
-hhsuite: "hh-suite"
+hhsuite: "/opt/hh-suite" # In singularity env
 hhblits_bin_mpi: "hhblits_mpi"
 hhmake: "hhmake"
 hhblits_prob: 90

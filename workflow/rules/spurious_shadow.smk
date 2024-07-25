@@ -8,7 +8,7 @@ rule spurious_shadow:
         config["container_env"]
     params:
         hmmer_bin   = config["hmmer_bin"],
-        mpi_runner  = config["mpi_runner"],
+        mpi_runner  = config["mpi_runner_hmmer"],
         hmmpress    = config["hmmpress_bin"],
         antifamdb   = config["ddir"] + '/' + config["antifam_db"],
         local_tmp   = config["mmseqs_local_tmp"],
@@ -34,6 +34,8 @@ rule spurious_shadow:
         config["rdir"] + "/benchmarks/spurious_shadow.tsv"
     shell:
         """
+        (
+        
         set -x
         set -e
 
@@ -154,6 +156,8 @@ rule spurious_shadow:
         fi
 
         rm {params.tmp1} {params.tmp2} {params.all_shad} {params.spur} {params.only_shad}
+        
+        ) 1>{log} 2>&1
         """
 
 rule spurious_shadow_done:

@@ -330,7 +330,7 @@ rule cluster_classification:
                 <(sort -k1,1 {params.outdir}/singl_gene_categ) \
               | sed 's/ /\\t/g' \
               > {params.s_categ}
-            rm {params.outdir}/singl_* {params.outdir}/singletons_not_annot* {params.outdir}/all_*
+            rm -f {params.outdir}/singl_* {params.outdir}/singletons_not_annot* {params.outdir}/all_*
         else
             awk 'NR>1 && $9!="DUF"{{print $1}}' {params.dom_arch} > {output.k}
         fi

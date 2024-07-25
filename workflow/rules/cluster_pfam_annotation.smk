@@ -72,7 +72,7 @@ rule cluster_pfam_annotation:
         ## 3. Singleton annotations
         
         join -12 -21 <(sort -k2,2 {params.singl} ) \
-            <(sort -k1,1 {params.multi_annot}) \
+            <(zcat {params.multi_annot} | sort -k1,1) \
           > {params.s_annot}
         
         ) 1>{log} 2>&1

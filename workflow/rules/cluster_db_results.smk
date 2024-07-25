@@ -1,10 +1,10 @@
 rule cluster_db_results:
     input:
-        iclu_cat = config["rdir"] + "/cluster_categories/cluster_ids_categ.tsv",
-        iclu_com = config["rdir"] + "/cluster_communities/cluster_communities.tsv",
+        iclu_cat   = config["rdir"] + "/cluster_categories/cluster_ids_categ.tsv",
+        iclu_com   = config["rdir"] + "/cluster_communities/cluster_communities.tsv",
         iclu_stats = config["rdir"] + "/cluster_category_stats/cluster_category_summary_stats.tsv",
-        ihq_clu = config["rdir"] + "/cluster_category_stats/HQ_clusters.tsv",
-        iclu_hhm = config["rdir"] + "/cluster_category_DB/clu_hhm_db"
+        ihq_clu    = config["rdir"] + "/cluster_category_stats/HQ_clusters.tsv",
+        iclu_hhm   = config["rdir"] + "/cluster_category_DB/clu_hhm_db",
     threads: 7
     container:
         config["container_env"]

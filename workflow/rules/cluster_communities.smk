@@ -7,7 +7,7 @@ rule cluster_communities_dbs:
       config["container_env"]
     params:
       mmseqs_bin = config["mmseqs_bin"],
-      mpi_runner = config["mpi_runner"],
+      mpi_runner = config["mpi_runner_hmmer"],
       vmtouch    = config["vmtouch"],
       hhblits    = config["hhblits_bin_mpi"],
       hhparse    = config["wdir"] + "/scripts/categ_hhparser.sh",
@@ -69,10 +69,10 @@ rule cluster_communities_inference:
     container:
       config["container_env"]
     params:
-      get_comm    = "scripts/communities_inference/get_communities.R",
+      get_comm    = config["wdir"] + "/" + "scripts/communities_inference/get_communities.R",
       pfam_clan   = config["ddir"] + "/" + config["pfam_clan"],
       db_mode     = config["db_mode"],
-      comm_config = "config/config_communities.yaml"
+      comm_config = config["wdir"] + "/" + "config/config_communities.yaml"
     output:
       comm = config["rdir"] + "/cluster_communities/cluster_communities.tsv"
     log:
@@ -90,7 +90,10 @@ rule cluster_communities_inference:
       fi
       
       # Start cluster community inference
+      . /usr/local/etc/profile.d/conda.sh
+      conda activate /usr/local/envs/cluster_communities_inference
       {params.get_comm} -c {params.comm_config}
+      conda deactivate
       
       rm -rf ${{OUT}}/tmp
       

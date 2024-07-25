@@ -3,40 +3,9 @@
 suppressMessages(library(crayon))
 suppressMessages(library(optparse))
 
-
-# Check if packaged are installed -----------------------------------------
-
-cat("\nChecking if all packages are installed...\n\n")
-
-needed <- c("tidyverse", "data.table","maditr", "optparse", "taxonomizr")
-
-missing_package <- FALSE
-# For loop to run through each of the packages
-for (p in 1:length(needed)){
-  if(is.installed(needed[p])){
-    cat(sprintf("%-12s: %s", needed[p], green("Installed\n")))
-  }else{
-    cat(sprintf("%-12s: %s", needed[p], red("Not installed\n")))
-    missing_package <- TRUE
-  }
-}
-
-quit_not_installed <- function(){
-  cat("\nMissing packages, please install them.\n")
-  quit(save = "no", status = 1)
-}
-
-if (missing_package) {
-  quit_not_installed()
-}else{
-  cat("\nAll packages installed.\n")
-}
-
-Sys.sleep(2)
-system("clear")
-
 # Load libraries ----------------------------------------------------------
 cat("Loading libraries...")
+needed <- c("tidyverse", "data.table","maditr", "optparse", "taxonomizr")
 silent <- suppressMessages(lapply(needed, function(X) {require(X, character.only = TRUE)}))
 rm(silent)
 cat(" done\n\n")

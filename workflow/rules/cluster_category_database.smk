@@ -19,6 +19,8 @@ rule cluster_category_database:
         cluseqdb   = config["rdir"] + "/cluster_refinement/refined_clusterDB",
         idir       = config["rdir"] + "/cluster_categories",
         outdir     = config["rdir"] + "/cluster_category_DB"
+    container:
+        config["container_env"]
     log:
         config["rdir"] + "/logs/cluster_category_database.log",
     benchmark:

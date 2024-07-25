@@ -263,10 +263,8 @@ majority_vote <- function (x, seed = 12345) {
 }
 
 get_majority <- function(X){
-
   list_genes <- X %>%                                        # Split into groups by gene-caller-id
     split(.$cl_name)
-
   maj_l <- mclapply(list_genes,apply_majority, mc.cores=8) # run majority_vote function
   maj_df <- plyr::ldply(maj_l, data.frame) %>%  # bind list rowwise and get distint votes for gene category
     select(cl_name,majority) %>%
@@ -278,6 +276,7 @@ apply_majority <- function(X){
   DT.1 <- X[,majority:=majority_vote(kaiju_tax)$majority, by="cl_name"]
   df <- DT.1 %>% as_tibble() %>% distinct()
 }
+
 kaiju_maj <- get_majority(cl_kaiju_tbl %>% select(cl_name,kaiju_tax) %>% distinct())
 
 # Cluster taxonomic entropy

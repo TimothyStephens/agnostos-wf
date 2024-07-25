@@ -90,7 +90,7 @@ while true; do
     esac
 done
 
-if [ -z "${CLU}" ] || [ -z "${STEP}" ] || [ -z "${RUNNER}" ] ||
+if [ -z "${CLU}" ] || [ -z "${STEP}" ] ||
     [ -z "${MMSEQS_BIN}" ] || [ -z "${ALN}" ] || [ -z "${HHSUITE}" ] || [ -z "${IDIR}" ] ||
     [ -z "${REFORM}" ] || [ -z "${CONS}" ] || [ -z "${HHMAKE}" ] || [ -z "${RES}" ] || [ -z "${NSLOTS}" ]; then
     usage

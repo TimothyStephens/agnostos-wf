@@ -18,6 +18,7 @@ rule cluster_category_stats:
         dpd_info     = config["ddir"] + "/" + config["dpd_info"],
         aa_mutants   = config["ddir"] + "/" + config["aa_mutants"],
         mutantDB     = config["ddir"] + "/" + config["mutantDB"],
+        eggnogDB     = config["ddir"] + "/" + "eggnog",
         db_mode      = config["db_mode"],
         kaiju_tax    = config["wdir"] + "/scripts/kaiju_taxonomy.sh",
         kaiju_parse  = config["wdir"] + "/scripts/kaiju_add_taxonomy.R",
@@ -45,20 +46,24 @@ rule cluster_category_stats:
     shell:
         """
         (
-        if [ {params.conf_tax_db} == "gtdb" ]; then
+        set -e
+        set -x
+        
+        if [ $(basename {params.conf_tax_db}) == "gtdb" ]; then
             TAXDB={params.gtdb}
             if [ ! -s {params.gtdb} ]; then
                 echo "Dowloading GTDB-r89 kaiju DB"
                 DB=$(dirname {params.mutantDB})
+                mkdir -p ${{DB}}
                 wget https://ndownloader.figshare.com/files/24745184 -O ${{DB}}/gtdb.tar.gz
                 tar xzvf ${{DB}}/gtdb.tar.gz --directory ${{DB}}
-                rm ${{DB}}/gtdb.tar.gz
+                rm -rf ${{DB}}/gtdb.tar.gz
             fi
         else
             TAXDB={params.nr}
             
             if [[ ! -s {params.nr} ]]; then
-                DIR=$(basedir ${{TAXDB}})
+                DIR=$(dirname ${{TAXDB}})
                 cd ${{DIR}}
                 {params.kaiju_bin}-makedb -s nr_euk
                 cd {params.workdir}
@@ -66,6 +71,10 @@ rule cluster_category_stats:
         fi
         
         ## Cluster Kaiju taxonomy with GTDB r89
+        . /usr/local/etc/profile.d/conda.sh
+        conda activate /usr/local/envs/cluster_category_stats
+        export PATH="/usr/local/envs/main/bin:$PATH"
+        
         if [[ ! -s {params.kaiju_res} ]]; then
             {params.vmtouch} -f ${{TAXDB}}
             {params.kaiju_tax} --search {params.kaiju_bin} \
@@ -78,7 +87,7 @@ rule cluster_category_stats:
         fi
         
         if [[ {params.db_mode} == "memory" ]]; then
-            rm ${{TAXDB}}
+            rm -rf ${{TAXDB}}
         fi
         
         # Extract all sequences from the refined database set:
@@ -179,18 +188,23 @@ rule cluster_category_stats:
         mkdir -p {params.eggnog_dir}
         if [[ ! -s {params.eggnog_dir}/cluster_eggnogs.tsv ]]; then
             
-            #pip install biopython
+            export EGGNOG_DATA_DIR="{params.eggnogDB}"
+            mkdir -p "$EGGNOG_DATA_DIR"
+            download_eggnog_data.py -P -y -f
             
             {params.eggnog_bin} -m diamond --no_annot --no_file_comment --cpu {threads} \
                                 -i {params.outdir}/refined_cl_genes.fasta \
                                 --output {params.eggnog_dir}/refined_nogs --override
             
-            NOG=$(dirname {params.eggnog_bin})
-            scp ${{NOG}}/data/* /dev/shm/
+            mkdir -p /dev/shm/eggnog
+            scp -r "$EGGNOG_DATA_DIR"/* /dev/shm/eggnog/
             {params.eggnog_bin} --annotate_hits_table {params.eggnog_dir}/refined_nogs.emapper.seed_orthologs \
                                 --no_file_comments -o {params.eggnog_dir}/refined \
-                                --cpu {threads} --override --data_dir /dev/shm
-            rm /dev/shm/*
+                                --cpu {threads} --override --data_dir /dev/shm/eggnog
+            rm -rf /dev/shm/eggnog
+            if [[ {params.db_mode} == "memory" ]]; then
+                rm -rf "$EGGNOG_DATA_DIR"
+            fi
             
             awk -vFS='\\t' -vOFS='\\t' '{{print $1,$7,$8}}' {params.eggnog_dir}/refined.emapper.annotations |\
                 sed 's/ /_/g' > {params.eggnog_dir}/refined_eggnogs.tsv
@@ -204,17 +218,17 @@ rule cluster_category_stats:
               > {params.eggnog_dir}/cluster_eggnogs.tsv
             
             sed -i 's/ /\\t/g' {params.eggnog_dir}/cluster_eggnogs.tsv
-            rm  {params.eggnog_dir}/refined_nogs*  {params.eggnog_dir}/refined_eggnogs.tsv
+            rm  -rf {params.eggnog_dir}/refined_nogs* {params.eggnog_dir}/refined_eggnogs.tsv
         fi
         
-        rm {params.outdir}/refined_cl_genes.fasta
+        rm -rf {params.outdir}/refined_cl_genes.fasta
+        
+        awk -F'\\t' 'NR>1{{split($2,a,";"); print $1"\\t"a[1]"\\t"a[2]"\\t"a[3]"\\t"a[4]"\\t"a[5]"\\t"a[6]"\\t"a[7]}}' {params.kaiju_res} > {params.kaiju_res}.reformatted
         
         ## Cluster general stats
-        . /usr/local/etc/profile.d/conda.sh
-        conda activate /usr/local/envs/cluster_category_stats
         {params.stats} --ref_clu {params.ref} \
                        --clu_categ {input.cl_cat} \
-                       --kaiju_tax {params.kaiju_res} \
+                       --kaiju_tax {params.kaiju_res}.reformatted \
                        --clu_dark {params.dark} \
                        --dpd_info {params.dpd_info} \
                        --compl {params.compl} \
@@ -224,11 +238,12 @@ rule cluster_category_stats:
                        --eggnog {params.eggnog_dir}/cluster_eggnogs.tsv \
                        --summ_stats {output.cat_stats} \
                        --output {params.outdir}
+        
         conda deactivate
         
         if [[ {params.db_mode} == "memory" ]]; then
-            rm {params.dpd_info} {params.DPD}
-            rm {params.aa_mutants} {params.mutantDB}
+            rm -rf {params.dpd_info} {params.DPD}
+            rm -rf {params.aa_mutants} {params.mutantDB}
         fi
         ) 1>{log} 2>&1
         """

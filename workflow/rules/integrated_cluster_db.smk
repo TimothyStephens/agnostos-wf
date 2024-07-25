@@ -59,7 +59,7 @@ rule integrated_cluster_db:
         iclu_com   = config["rdir"] + "/integrated_cluster_DB/cluster_communities.tsv.gz",
         iclu_stats = config["rdir"] + "/integrated_cluster_DB/cluster_category_summary_stats.tsv.gz",
         ihq_clu    = config["rdir"] + "/integrated_cluster_DB/HQ_clusters.tsv.gz",
-        iclu_hmm  = config["rdir"] + "/integrated_cluster_DB/mmseqs-profiles/clu_profileDB"
+        iclu_hmm   = config["rdir"] + "/integrated_cluster_DB/mmseqs-profiles/clu_profileDB",
     shell:
         """
         (

@@ -10,6 +10,7 @@ rule cluster_category_refinement:
     params:
         mmseqs_bin      = config["mmseqs_bin"],
         mpi_runner      = config["mpi_runner"],
+        mpi_runner_hmmer= config["mpi_runner_hmmer"],
         hhsuite         = config["hhsuite"],
         famsa_bin       = config["famsa_bin"],
         vmtouch         = config["vmtouch"],
@@ -108,7 +109,7 @@ rule cluster_category_refinement:
             if [[ $EU -le 10000 ]]; then
                 # Run directly EU vs Uniclust
                 if [[ ! -f {params.tmp_eu}.index ]]; then
-                    {params.mpi_runner} {params.hhblits_bin_mpi} -i {params.hmm_eu} \
+                    {params.mpi_runner_hmmer} {params.hhblits_bin_mpi} -i {params.hmm_eu} \
                                                                  -o {params.tmp_eu} \
                                                                  -n 2 -cpu 1 -v 0 \
                                                                  -d {params.uniclust_db}
@@ -126,7 +127,7 @@ rule cluster_category_refinement:
                 # Run EU vs PFAM and then EU vs Uniclust
                 ## EU vs Pfam
                 if [[ ! -f {params.tmp_eu}.index ]]; then
-                    {params.mpi_runner} {params.hhblits_bin_mpi} -i {params.hmm_eu} \
+                    {params.mpi_runner_hmmer} {params.hhblits_bin_mpi} -i {params.hmm_eu} \
                                                                  -o {params.tmp_eu} \
                                                                  -n 2 -cpu 1 -v 0 \
                                                                  -d {params.pfam_db}
@@ -187,7 +188,7 @@ rule cluster_category_refinement:
                 # Run remaining EU GCs vs Uniclust
                 {params.vmtouch} -f {params.hmm_eu}
                 if [[ ! -f {params.tmp_eu}_unicl.index ]]; then
-                    {params.mpi_runner} {params.hhblits_bin_mpi} -i {params.hmm_eu} \
+                    {params.mpi_runner_hmmer} {params.hhblits_bin_mpi} -i {params.hmm_eu} \
                                                                  -o {params.tmp_eu}_unicl \
                                                                  -n 2 -cpu 1 -v 0 \
                                                                  -d {params.uniclust_db}
@@ -296,7 +297,7 @@ rule cluster_category_refinement:
         if [[ ! -f {params.tmp_kwp}.index || ! -f {params.tmp_kwp}.tsv ]]; then
             {params.vmtouch} -f {params.hmm_kwp}
             if [[ ! -f {params.tmp_kwp}.index ]]; then
-                {params.mpi_runner} {params.hhblits_bin_mpi} -i {params.hmm_kwp} \
+                {params.mpi_runner_hmmer} {params.hhblits_bin_mpi} -i {params.hmm_kwp} \
                                                              -o {params.tmp_kwp} \
                                                              -n 2 -cpu 1 -v 0 \
                                                              -d {params.pfam_db}
@@ -377,7 +378,7 @@ rule cluster_category_refinement:
             <(awk '!seen[$1,$3]++{{print $1,$3}}' {params.ref_clu} | sort -k1,1) \
           > {params.categ_orfs}
         
-        gzip {params.categ_orfs}
+        gzip -f {params.categ_orfs}
         
         # Gather cluster annotations obtained from the classification and the two refinement steps
         class=$(dirname {input.k})

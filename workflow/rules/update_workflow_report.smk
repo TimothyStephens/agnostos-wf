@@ -8,10 +8,10 @@ rule update_workflow_report:
         config["container_env"]
     params:
         basedir       = config["rdir"],
-        outdir        = config["rdir"] + "/report/",
-        input_data    = config["data"],
-        name_data     = config["data_name"],
         sequence_type = config["sequence_type"],
+        outdir        = config["rdir"] + "/report/",
+        input_data    = config["sequences"],
+        name_data     = config["data_name"],
         report_maker  = config["wdir"] + "/scripts/report_maker.r",
         wf_report     = config["wdir"] + "/scripts/update_workflow_report.Rmd"
     output:
@@ -27,9 +27,9 @@ rule update_workflow_report:
         conda activate /usr/local/envs/report_maker
         Rscript --vanilla {params.report_maker} --basedir {params.basedir} \
                                                 --outdir  {params.outdir} \
+                                                --stage {params.sequence_type} \
                                                 --name {params.name_data} \
                                                 --input {params.input_data} \
-                                                --stage {params.sequence_type} \
                                                 --wf_report {params.wf_report} \
                                                 --output {output.report}
         conda deactivate

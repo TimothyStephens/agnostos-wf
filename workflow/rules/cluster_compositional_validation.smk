@@ -13,11 +13,13 @@ rule cluster_compositional_validation:
         igraph_lib      = config["igraph_lib"],
         parasail_lib    = config["parasail_lib"],
         threads_collect = config["threads_collect"],
+        batch_size      = config["batch_size"],
+        memory_budget   = config["memory_budget"],
         module          = config["module"],
         cvals           = config["wdir"] + "/scripts/compositional_validation.sh",
         stats           = config["wdir"] + "/scripts/get_stats.r",
-        isconnect       = config["wdir"] + "/scripts/is_connected",
-        filterg         = config["wdir"] + "/scripts/filter_graph",
+        isconnect       = "/usr/local/bin/is_connected", #config["wdir"] + "/scripts/is_connected",
+        filterg         = "/usr/local/bin/filter_graph", #config["wdir"] + "/scripts/filter_graph",
         collect         = config["wdir"] + "/scripts/collect_val_results.sh",
         outdir          = config["rdir"] + "/validation",
         stat_dir        = config["rdir"] + "/validation/stats",
@@ -26,7 +28,7 @@ rule cluster_compositional_validation:
         outdb           = config["rdir"] + "/validation/comp_valDB"
     container:
         config["container_env"]
-    threads: 7
+    threads: 72
     priority: 50
     output:
         cl_cval  = config["rdir"] + "/validation/compositional_validation_results.tsv",
@@ -57,7 +59,9 @@ rule cluster_compositional_validation:
         
         . /usr/local/etc/profile.d/conda.sh
         conda activate /usr/local/envs/get_stats
+        export PATH="/usr/local/envs/main/bin:$PATH"
         {params.mpi_runner} {params.mmseqs_bin} apply ${{DB}} {params.outdb} \
+            --threads 1 \
             -- {params.cvals} --derep {params.mmseqs_bin} \
                        --msa {params.famsa_bin} \
                        --msaeval {params.odseq_bin} \
@@ -69,7 +73,8 @@ rule cluster_compositional_validation:
                        --stats {params.stats} \
                        --outdir {params.outdir} \
                        --slots {threads} \
-                       --threads {threads}
+                       --batch_size {params.batch_size} \
+                       --memory_budget {params.memory_budget}
         conda deactivate
         
         # Collect results:

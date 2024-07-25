@@ -3,6 +3,9 @@
 set -o nounset
 set -x
 
+BATCH_SIZE=10000000
+MEMORY_BUDGET="30GB"
+
 usage() {
   echo -e "Usage: $(basename "$0") [OPTIONS...]
 Options:
@@ -67,6 +70,14 @@ while true; do
     ;;
   --slots)
     NSLOTS=$2
+    shift 2
+    ;;
+  --batch_size)
+    BATCH_SIZE=$2
+    shift 2
+    ;;
+  --memory_budget)
+    MEMORY_BUDGET=$2
     shift 2
     ;;
   --)
@@ -198,7 +209,7 @@ function get_SSN_para() {
   # Identity scores from the MSA
   ID="${N}"_id
   # the 5th column has the identity score
-  "${PARASAIL_BIN}" -a sg_stats_scan_16 -f "${DEDUP}" -g "${N}"_ssn.out -t 7 -c 5 -x &>/dev/null
+  "${PARASAIL_BIN}" -a sg_stats_scan_16 -f "${DEDUP}" -g "${N}"_ssn.out -t ${NSLOTS} -c 5 -x -v -V -b ${BATCH_SIZE} -r ${MEMORY_BUDGET}
   awk 'BEGIN{FS=","}{print $1" "$2" "$9/$10}' "${N}"_ssn.out > "${ID}"
   # Get statistics from the raw SSN
   SSN_RAW_STATS="${N}"_SSN_raw_stats.tsv
@@ -307,7 +318,7 @@ main() {
   SEQS=$(perl -ne 'print $_')
   NSEQS=$(grep -c '>' <(echo "${SEQS}"))
 
-  exec > >(tee -i -a "$log") 2> >(tee -i -a "$log" >&2)
+  exec > >(tee -i "$log") 2>&1
 
   # Filter clusters
   if [[ "${NSEQS}" -ge 2 ]]; then

@@ -3,7 +3,7 @@ rule pfam_annotation:
         gp = config["rdir"] + "/gene_prediction/orf_seqs.fasta"
     params:
         hmmer_bin  = config["hmmer_bin"],
-        mpi_runner = config["mpi_runner"],
+        mpi_runner = config["mpi_runner_hmmer"],
         pfamdb     = config["ddir"] + "/" + config["pfam_db"],
         db_mode    = config["db_mode"],
         parser     = config["wdir"] + "/scripts/hmmsearch_res_parser.sh",

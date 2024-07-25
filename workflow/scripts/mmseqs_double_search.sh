@@ -93,7 +93,7 @@ while true; do
   esac
 done
 
-if [ -z "${MMSEQS_BIN}" ] || [ -z "${MPI}" ] || [ -z "${LTMP}" ] || [ -z "${CONS}" ] ||
+if [ -z "${MMSEQS_BIN}" ] || [ -z "${LTMP}" ] || [ -z "${CONS}" ] ||
   [ -z "${DB}" ] || [ -z "${DB_PROT}" ] || [ -z "${EFILTER}" ] || [ -z "${DIR}" ] ||
   [ -z "${PATTERNS}" ] || [ -z "${PGREP}" ] || [ -z "${RES}" ]; then
   usage
