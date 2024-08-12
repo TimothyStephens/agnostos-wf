@@ -2,7 +2,7 @@ rule cluster_communities_dbs:
     input:
       k     = config["rdir"] + "/cluster_category_DB/k_hhm_db.index",
       stats = config["rdir"] + "/cluster_category_stats/cluster_category_summary_stats.tsv"
-    threads: 7
+    threads: config['threads_default']
     container:
       config["container_env"]
     params:
@@ -65,7 +65,7 @@ rule cluster_communities_inference:
     input:
       k     = config["rdir"] + "/cluster_communities/k_hhblits.tsv",
       stats = config["rdir"] + "/cluster_category_stats/cluster_category_summary_stats.tsv"
-    threads: 7
+    threads: config['threads_default']
     container:
       config["container_env"]
     params:

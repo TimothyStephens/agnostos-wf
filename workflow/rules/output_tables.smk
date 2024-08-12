@@ -2,7 +2,7 @@ rule output_tables:
     input:
         genes = config["rdir"] + "/gene_prediction/orf_partial_info.tsv",
         cat = config["rdir"] + "/integrated_cluster_DB/cluster_ids_categ.tsv.gz"
-    threads: 28
+    threads: config['threads_default']
     container:
         config["container_env"]
     params:

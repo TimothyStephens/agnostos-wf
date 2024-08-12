@@ -4,7 +4,7 @@ rule cluster_category_refinement:
         kwp = config["rdir"] + "/cluster_classification/kwp_ids.txt",
         gu  = config["rdir"] + "/cluster_classification/gu_ids.txt",
         eu  = config["rdir"] + "/cluster_classification/eu_ids.txt"
-    threads: config["threads_cat_ref"]
+    threads: config["threads_default"]
     container:
         config["container_env"]
     params:

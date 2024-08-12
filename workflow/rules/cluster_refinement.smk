@@ -4,7 +4,7 @@ rule cluster_refinement:
         val_res  = config["rdir"] + "/validation/validation_results.tsv",
         sp_sh    = config["rdir"] + "/spurious_shadow/spurious_shadow_info.tsv",
         cval_rej = config["rdir"] + "/validation/compositional_validation_rejected_orfs.tsv"
-      threads: 28
+      threads: config['threads_default']
       container:
         config["container_env"]
       params:

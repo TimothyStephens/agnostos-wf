@@ -2,7 +2,7 @@ rule cluster_category_stats:
     input:
         k_db   = config["rdir"] + "/cluster_category_DB/k_cons.index",
         cl_cat = config["rdir"] + "/cluster_categories/cluster_ids_categ.tsv",
-    threads: 28
+    threads: config['threads_default']
     params:
         workdir      = config["wdir"],
         mmseqs_bin   = config["mmseqs_bin"],

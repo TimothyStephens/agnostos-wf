@@ -2,7 +2,7 @@ rule cluster_validation_results:
       input:
         cval = config["rdir"] + "/validation/compositional_validation_results.tsv",
         fval = config["rdir"] + "/validation/functional_val_results.tsv"
-      threads: 28
+      threads: config['threads_default']
       container:
         config["container_env"]
       params:

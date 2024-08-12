@@ -2,7 +2,7 @@ rule cluster_classification:
     input:
         ref_noannot = config["rdir"] + "/cluster_refinement/refined_not_annotated_clusters.tsv",
         ref_annot   = config["rdir"] + "/cluster_refinement/refined_annotated_clusters.tsv"
-    threads: 28
+    threads: config['threads_default']
     container:
         config["container_env"]
     params:

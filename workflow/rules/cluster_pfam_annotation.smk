@@ -4,7 +4,7 @@ rule cluster_pfam_annotation:
         annot   = config["rdir"] + "/pfam_annotation/pfam_annot_parsed.tsv",
         partial = config["rdir"] + "/gene_prediction/orf_partial_info.tsv"
     priority: 1
-    threads: 28
+    threads: config['threads_default']
     container:
         config["container_env"]    
     params:

@@ -4,7 +4,7 @@ rule cluster_category_database:
         kwp = config["rdir"] + "/cluster_categories/kwp_ids.txt",
         gu  = config["rdir"] + "/cluster_categories/gu_ids.txt",
         eu  = config["rdir"] + "/cluster_categories/eu_ids.txt"
-    threads: 28
+    threads: config['threads_default']
     params:
         mmseqs_bin = config["mmseqs_bin"],
         mpi_runner = config["mpi_runner"],

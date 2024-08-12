@@ -4,40 +4,38 @@
 # Workflow absolute path (path to the scripts from GitHub)
 wdir: "/home/timothy/GitHub/agnostos-wf/workflow"
 # Results absolute path
-#rdir: "/scratch/timothy/tmp/agnostos-wf/results"
-rdir: "/scratch/timothy/tmp/agnostos-wf/results_update"
+rdir: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/results"
+#rdir: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/results_update"
 # Community cluster absolute path (can be that same as rdir)
-#idir: "/scratch/timothy/tmp/agnostos-wf/results"
-idir: "/scratch/timothy/tmp/agnostos-wf/results_update"
+idir: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/results"
+#idir: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/results_update"
 # Database absolute path
-ddir: "/scratch/timothy/tmp/agnostos-wf/databases"
+ddir: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/databases"
 
 # Absolute path to existing cluster DB (sequence and cluster DBs) - only used for the "update" module
-#ordir: "/scratch/timothy/tmp/agnostos-wf/results/clusterDB_results"
-ordir: "/scratch/timothy/tmp/agnostos-wf/clusterDB_results"
+ordir: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/clusterDB_results"
 
 ## Local template folder
-local_tmp: &tmpdir "/scratch/timothy/tmp/agnostos-wf/tmp"
+local_tmp: &tmpdir "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/tmp"
 
 ## Setting module to "update" to run the cluster-update version of the snakemake workflow (otherwise "creation")
 module: "creation" #"update"
 
 ## Choose a name for your dataset
 #data_name: "tara_039_041"
-data_name: "TARA_038"
+data_name: "refseq"
 
 ## Absolute path to the sequences that will be clustered or integrated into an existing cluster DB
 # Formats: name_contigs.fasta or name_proteins.fasta
 #   OR     name_contigs.fasta.gz or name_proteins.fasta.gz
-#sequences: "/home/timothy/GitHub/agnostos-wf/agnostos_test/db_creation_data/TARA_039_041_SRF_0.1-0.22_5K_contigs.fasta"
-sequences: "/home/timothy/GitHub/agnostos-wf/agnostos_test/TARA_039_041_028_SRF_0.1-0.22_5K_contigs.fasta"
+sequences: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/proteins.faa"
 ## Specify which type of sequence you have, can be either "proteins" or "contigs"
-sequence_type: "contigs" #"contigs" or "proteins" or "anvio_genes"
+sequence_type: "proteins" #"contigs" or "proteins" or "anvio_genes"
 ## If you alrady have the protein predictions, please provide path to protein completeness information (i.e., complete or partial ORFs)
 # In case your data comes from an Anvi'o contigDB, please specify here the anvio gene_calls.tsv file,
 # retrieved via "anvi-export-gene-calls -c CONTIGS.db -o anvio_gene_calls.tsv"
 # If you are providing just contigs, then leave this empty.
-sequences_partial: ""
+sequences_partial: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/proteins.orf_partial_info.tsv"
 
 ## If you want to classify the singleton in the four category set the following entry to "true"
 singl: "true"
@@ -50,16 +48,13 @@ eval_shared: "true"
 shared_type: "all" # "discarded" # "increase"
 
 # If you want ot dowload the required DBs at each step and then remove them, set db_mode to memory.
-db_mode: "memory" # Options: "memory", "all"
+db_mode: "all" # Options: "memory", "all"
 
 # Docker image of all major tools used by agnostos
 container_env: "/home/timothy/GitHub/containerize-conda/builds/agnostos-wf/agnostos-wf_v1.1.1-rev1.sif"
 
 # Threads configuration
-threads_default: 28
-threads_collect: 28
-threads_cat_ref: 28
-threads_res: 14
+threads_default: 92
 
 # Databases (paths are relative from "ddir")
 pfam_db: "Pfam-A.hmm"
@@ -106,8 +101,7 @@ hmmer_bin: "hmmsearch"
 mmseqs_bin: "mmseqs"
 mmseqs_tmp: *tmpdir
 mmseqs_local_tmp: *tmpdir
-mmseqs_split_mem: "100G"
-mmseqs_split: 10
+mmseqs_split_mem: "300G"
 
 # Clustering results config
 seqtk_bin: "seqtk"

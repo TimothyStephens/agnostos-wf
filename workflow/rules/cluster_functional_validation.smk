@@ -1,7 +1,7 @@
 rule cluster_functional_validation:
     input:
         cl_annot = config["rdir"] + "/annot_and_clust/annotated_clusters.tsv"
-    threads: 28
+    threads: config['threads_default']
     container:
         config["container_env"]
     params:

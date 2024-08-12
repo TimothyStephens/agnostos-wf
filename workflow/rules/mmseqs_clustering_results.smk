@@ -1,8 +1,7 @@
 rule mmseqs_clustering_results:
     input:
         clu = config["rdir"] + "/mmseqs_clustering/cluDB.tsv"
-    threads:
-        config['threads_default']
+    threads: config['threads_default']
     priority: 40
     params:
         mmseqs_bin  = config["mmseqs_bin"],

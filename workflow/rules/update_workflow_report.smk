@@ -3,7 +3,7 @@ rule update_workflow_report:
         iclu_com = config["rdir"] + "/integrated_cluster_DB/cluster_communities.tsv.gz",
         comm     = config["rdir"] + "/cluster_communities/cluster_communities.tsv",
         annot    = config["rdir"] + "/output_tables/DB_cluster_annotations.tsv"
-    threads: 28
+    threads: config['threads_default']
     container:
         config["container_env"]
     params:

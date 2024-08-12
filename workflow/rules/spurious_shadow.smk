@@ -2,7 +2,7 @@ rule spurious_shadow:
     input:
         fasta    = config["rdir"] + "/gene_prediction/orf_seqs.fasta",
         clusters = config["rdir"] + "/mmseqs_clustering/cluDB_no_singletons.tsv"
-    threads: 16
+    threads: config['threads_default']
     priority: 30
     container:
         config["container_env"]

@@ -5,6 +5,7 @@ rule mmseqs_clustering:
         mmseqs_bin        = config["mmseqs_bin"],
         mmseqs_mpi_runner = config["mpi_runner"],
         mmseqs_local_tmp  = config["mmseqs_local_tmp"],
+        mmseqs_split_mem  = config["mmseqs_split_mem"],
         mmseqs_cov        = 0.8,
         mmseqs_id         = 0.3,
         mmseqs_cov_mode   = 0,
@@ -12,7 +13,7 @@ rule mmseqs_clustering:
         mmseqs_tmp        = config["rdir"] + "/mmseqs_clustering/tmp",
         seqdb             = config["rdir"] + "/mmseqs_clustering/seqDB",
         cludb             = config["rdir"] + "/mmseqs_clustering/cluDB"
-    threads: 28
+    threads: config['threads_default']
     priority: 50
     container:
         config["container_env"]
@@ -32,7 +33,7 @@ rule mmseqs_clustering:
         export OMP_NUM_THREADS={threads}
         export OMP_PROC_BIND=FALSE
         
-        {params.mmseqs_bin} createdb {input.orfs} {params.seqdb}
+        {params.mmseqs_bin} createdb {input.orfs} {params.seqdb} --compressed 1
         
         {params.mmseqs_bin} cluster \
           {params.seqdb} \
@@ -44,7 +45,9 @@ rule mmseqs_clustering:
           --cov-mode {params.mmseqs_cov_mode} \
           --min-seq-id {params.mmseqs_id} \
           -s {params.mmseqs_ens} \
-          --mpi-runner "{params.mmseqs_mpi_runner}"
+          --mpi-runner "{params.mmseqs_mpi_runner}" \
+          --split-memory-limit {params.mmseqs_split_mem} \
+          --compressed 1
         
         {params.mmseqs_bin} createtsv {params.seqdb} {params.seqdb} {params.cludb} {output.clu}
         ) 1>{log} 2>&1

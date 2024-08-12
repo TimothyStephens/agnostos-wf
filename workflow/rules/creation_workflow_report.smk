@@ -3,7 +3,7 @@ rule creation_workflow_report:
         cat_db  = config["rdir"] + "/cluster_category_DB/k_hhm_db.index",
         clu_cat = config["rdir"] + "/clusterDB_results/cluster_ids_categ.tsv.gz",
         comm    = config["rdir"] + "/cluster_communities/cluster_communities.tsv"
-    threads: 28
+    threads: config['threads_default']
     container:
         config["container_env"]
     params:

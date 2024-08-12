@@ -16,7 +16,7 @@ rule pfam_annotation:
         config["container_env"]
     output:
         pf_annot = config["rdir"] + "/pfam_annotation/pfam_annot_parsed.tsv"
-    threads: 28
+    threads: config['threads_default']
     log:
         config["rdir"] + "/logs/pfam_annotation.log",
     benchmark:

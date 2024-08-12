@@ -5,7 +5,7 @@ rule integrated_cluster_db:
         clu_stats = config["rdir"] + "/cluster_category_stats/cluster_category_summary_stats.tsv",
         hq_clu    = config["rdir"] + "/cluster_category_stats/HQ_clusters.tsv",
         clu_hhm   = config["rdir"] + "/cluster_category_DB/clu_hhm_db"
-    threads: 7
+    threads: config['threads_default']
     container:
         config["container_env"]
     params:

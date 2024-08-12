@@ -12,7 +12,6 @@ rule cluster_compositional_validation:
         parallel_bin    = config["parallel_bin"],
         igraph_lib      = config["igraph_lib"],
         parasail_lib    = config["parasail_lib"],
-        threads_collect = config["threads_collect"],
         batch_size      = config["batch_size"],
         memory_budget   = config["memory_budget"],
         module          = config["module"],
@@ -28,7 +27,7 @@ rule cluster_compositional_validation:
         outdb           = config["rdir"] + "/validation/comp_valDB"
     container:
         config["container_env"]
-    threads: 72
+    threads: config['threads_default']
     priority: 50
     output:
         cl_cval  = config["rdir"] + "/validation/compositional_validation_results.tsv",
@@ -79,7 +78,7 @@ rule cluster_compositional_validation:
         
         # Collect results:
         # collect cluster main compositional validation stats and cluster rejected (bad-aligned) ORFs
-        {params.collect} {params.stat_dir} {output.cl_cval} {output.cval_rej} {params.parallel_bin} {params.threads_collect}
+        {params.collect} {params.stat_dir} {output.cl_cval} {output.cval_rej} {params.parallel_bin} {threads}
         
         rm -rf {params.outdb} {params.outdb}.index {params.outdb}.dbtype
         rm -rf {params.outdir}/stats {params.outdir}/log_vals {params.outdir}/rejected

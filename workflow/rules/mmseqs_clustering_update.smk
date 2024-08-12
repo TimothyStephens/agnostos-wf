@@ -17,9 +17,8 @@ rule mmseqs_clustering_update:
         conc_seqdb        = config["rdir"] + "/mmseqs_clustering/concat_seqDB",
         updt_seqdb        = config["rdir"] + "/mmseqs_clustering/seqDB",
         updt_cludb        = config["rdir"] + "/mmseqs_clustering/cluDB",
-        mmseqs_split      = config["mmseqs_split"],
         mmseqs_mpi_runner = config["mpi_runner"]
-    threads: 28
+    threads: config['threads_default']
     container:
         config["container_env"]
     output:
@@ -78,7 +77,8 @@ rule mmseqs_clustering_update:
           -c {params.mmseqs_cov} \
           --cov-mode {params.mmseqs_cov_mode} \
           --min-seq-id {params.mmseqs_id} \
-          -s {params.mmseqs_ens}
+          -s {params.mmseqs_ens} \
+          --split-memory-limit {params.mmseqs_split_mem}
         
         {params.mmseqs_bin} createtsv \
           {params.updt_seqdb} \
