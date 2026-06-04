@@ -4,19 +4,19 @@
 # Workflow absolute path (path to the scripts from GitHub)
 wdir: "/home/timothy/GitHub/agnostos-wf/workflow"
 # Results absolute path
-rdir: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/results"
-#rdir: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/results_update"
+rdir: "/scratch/timothy/tmp/agnostos-wf/results"
+#rdir: "/scratch/timothy/tmp/agnostos-wf/results_update"
 # Community cluster absolute path (can be that same as rdir)
-idir: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/results"
-#idir: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/results_update"
+idir: "/scratch/timothy/tmp/agnostos-wf/results"
+#idir: "/scratch/timothy/tmp/agnostos-wf/results_update"
 # Database absolute path
-ddir: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/databases"
+ddir: "/scratch/timothy/tmp/agnostos-wf/databases"
 
 # Absolute path to existing cluster DB (sequence and cluster DBs) - only used for the "update" module
-ordir: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/clusterDB_results"
+ordir: "/scratch/timothy/tmp/agnostos-wf/clusterDB_results"
 
 ## Local template folder
-local_tmp: &tmpdir "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/tmp"
+local_tmp: &tmpdir "/scratch/timothy/tmp/agnostos-wf/tmp"
 
 ## Setting module to "update" to run the cluster-update version of the snakemake workflow (otherwise "creation")
 module: "creation" #"update"
@@ -28,14 +28,15 @@ data_name: "refseq"
 ## Absolute path to the sequences that will be clustered or integrated into an existing cluster DB
 # Formats: name_contigs.fasta or name_proteins.fasta
 #   OR     name_contigs.fasta.gz or name_proteins.fasta.gz
-sequences: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/proteins.faa"
+sequences: "/scratch/timothy/tmp/agnostos-wf/agnostos_test/contigs_create.fasta"
+#sequences: "/scratch/timothy/tmp/agnostos-wf/agnostos_test/contigs_update.fasta"
 ## Specify which type of sequence you have, can be either "proteins" or "contigs"
-sequence_type: "proteins" #"contigs" or "proteins" or "anvio_genes"
+sequence_type: "contigs" #"contigs" or "proteins" or "anvio_genes"
 ## If you alrady have the protein predictions, please provide path to protein completeness information (i.e., complete or partial ORFs)
 # In case your data comes from an Anvi'o contigDB, please specify here the anvio gene_calls.tsv file,
 # retrieved via "anvi-export-gene-calls -c CONTIGS.db -o anvio_gene_calls.tsv"
 # If you are providing just contigs, then leave this empty.
-sequences_partial: "/scratch/timothy/projects/0056_Sargassum/03_Analysis/2024-03-29/02_agnostos-wf/proteins.orf_partial_info.tsv"
+sequences_partial: ""
 
 ## If you want to classify the singleton in the four category set the following entry to "true"
 singl: "true"
@@ -101,7 +102,7 @@ hmmer_bin: "hmmsearch"
 mmseqs_bin: "mmseqs"
 mmseqs_tmp: *tmpdir
 mmseqs_local_tmp: *tmpdir
-mmseqs_split_mem: "300G"
+mmseqs_split_mem: "50G"
 
 # Clustering results config
 seqtk_bin: "seqtk"

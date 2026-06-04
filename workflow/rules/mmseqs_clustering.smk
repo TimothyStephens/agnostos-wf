@@ -33,6 +33,10 @@ rule mmseqs_clustering:
         export OMP_NUM_THREADS={threads}
         export OMP_PROC_BIND=FALSE
         
+        if [ -e ".mmseqs_clustering_done_manually" ]; then
+            touch "{output.clu}"
+        else
+        
         {params.mmseqs_bin} createdb {input.orfs} {params.seqdb} --compressed 1
         
         {params.mmseqs_bin} cluster \
@@ -49,7 +53,10 @@ rule mmseqs_clustering:
           --split-memory-limit {params.mmseqs_split_mem} \
           --compressed 1
         
+        fi
+        
         {params.mmseqs_bin} createtsv {params.seqdb} {params.seqdb} {params.cludb} {output.clu}
+        
         ) 1>{log} 2>&1
         """
 

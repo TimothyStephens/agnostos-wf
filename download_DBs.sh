@@ -1,9 +1,72 @@
 #!/bin/#!/usr/bin/env bash
 
-MMSEQS="${PWD}"/bin/mmseqs
+## Useage information
+usage() {
+echo -e "##
+## $(basename ${0})
+##
+
+<<<DESCRIPTION>>>
+
+Usage: 
+./$(basename $0) --mmseqs ~/bin/mmseqs
+
+--mmseqs                   Path to mmseqs2 binary
+--hmmpress                 Path to hmmpress binary
+-h, --help                 This help message
+--debug                    Run debug mode
+" 1>&2
+exit 1
+}
+
+
+# See https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]; do
+  key="$1"
+
+  case $key in
+    --mmseqs)
+      MMSEQS="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    --hmmpress)
+      HMMPRESS="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -h|--help)
+      usage
+      exit 1;
+      ;;
+    --debug)
+      set -x
+      shift # past argument
+      ;;
+    *) # unknown option
+      POSITIONAL+=("$1") # save it in an array for later
+      shift # past argument
+      ;;
+  esac
+done
+
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+
+set +eu
+if [ -z "${MMSEQS}" ]; then
+    usage
+fi
+set -eu
+
+
+WGET_ARGS="--user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'"
+
+
 
 mkdir -p databases
-
 cd databases
 
 # Pfam database
@@ -27,7 +90,7 @@ fi
 # Pfam list common domain terms
 if [ ! -s Pfam-34_names_mod_20102021.tsv ]; then
   echo "Dowloading Pfam list of shared domain names"
-  wget https://figshare.com/ndownloader/files/31127782 -O Pfam-34_names_mod_20102021.tsv
+  wget $WGET_ARGS https://figshare.com/ndownloader/files/31127782 -O Pfam-34_names_mod_20102021.tsv
 fi
 
 # Antifam databases
@@ -35,7 +98,7 @@ if [ ! -s AntiFam.hmm ]; then
   echo "Dowloading AntiFam database"
   wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/AntiFam/current/Antifam.tar.gz
   tar xvfz Antifam.tar.gz
-  ../bin/hmmpress AntiFam.hmm
+  $HMMPRESS AntiFam.hmm
 fi
 
 # Uniref90
@@ -66,14 +129,14 @@ fi
 # DPD and info
 if [ ! -s dpd_uniprot_sprot.fasta.gz ]; then
   echo "Dowloading DPD"
-  wget https://ndownloader.figshare.com/files/23756312 -O dpd_uniprot_sprot.fasta.gz
-  wget https://ndownloader.figshare.com/files/23756306 -O dpd_ids_all_info.tsv.gz
+  wget $WGET_ARGS https://ndownloader.figshare.com/files/23756312 -O dpd_uniprot_sprot.fasta.gz
+  wget $WGET_ARGS https://ndownloader.figshare.com/files/23756306 -O dpd_ids_all_info.tsv.gz
 fi
 
 # GTDB r89 taxonomy DB
 if [ ! -s gtdb-r89_54k/gtdb-r89_54k.fmi ]; then
   echo "Dowloading GTDB-r89 kaiju DB"
-  wget https://ndownloader.figshare.com/files/24745184 -O gtdb-r89_54k.tar.gz
+  wget $WGET_ARGS https://ndownloader.figshare.com/files/24745184 -O gtdb-r89_54k.tar.gz
   tar xzvf gtdb-r89_54k.tar.gz
 fi
 
